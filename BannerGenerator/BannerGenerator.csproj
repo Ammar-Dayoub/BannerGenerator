@@ -13,6 +13,8 @@
     <PackageId>Bannerlord.BannerGenerator</PackageId>
     <PackageTags>Bannerlord BannerGenerator MountAndBlade</PackageTags>
     <RepositoryUrl>https://github.com/Ammar-Dayoub/BannerGenerator</RepositoryUrl>
+    <SignAssembly>false</SignAssembly>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
