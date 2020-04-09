@@ -1,6 +1,8 @@
 # BannerGenerator
 A bunch of utilities to generate banners for Mount &amp; Blade II: Bannerlord
 
+![Fill](images/fill.png)
+
 ## Setup
 
 - Refernce the nuget package [`Bannerlord.BannerGenerator`](https://www.nuget.org/packages/Bannerlord.BannerGenerator) in your project

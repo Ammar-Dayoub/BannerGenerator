@@ -1,6 +1,8 @@
 name: publish to nuget
 on:
   push:
+    paths:
+      - 'BannerGenerator/**'
     branches:
       - master # Default release branch
 jobs:
