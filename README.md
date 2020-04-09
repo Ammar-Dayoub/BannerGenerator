@@ -16,7 +16,7 @@ var backgroundParams = new BackgroundGeneratorParams {
 	Colour1 = Colour.White,
 	Colour2 = Colour.White,
 };
-var itemParams = new List<ItemGeneratorParams> {
+var params = new List<ItemGeneratorParams> {
 	new ItemGeneratorParams
 	{
 		MeshId = Mesh.Bird0,
@@ -27,24 +27,38 @@ var itemParams = new List<ItemGeneratorParams> {
 		AlignY = AlignY.Centre
 	}
 };
-Console.WriteLine(Utilities.Generate(backgroundParams, itemParams));
+Console.WriteLine(Utilities.Generate(backgroundParams, params));
 ```
 
-- To get a banner for a **pattern** and a background
+- To get a banner for a **pattern** and a background [example shown above](images/fill.png)
 
 ```cs
-var backgroundParams = new BackgroundGeneratorParams {
-	MeshId = BackgroundMesh.Fill,
-	Colour1 = Colour.White,
-	Colour2 = Colour.White,
-};
-var patternParams = new PatternGeneratorParams {
-	MeshId = Mesh.Flora0,
-	Type = PatternType.CrossDiagonal,
-	Margin = 300,
+var params = new PatternGeneratorParams
+{
+	MeshId = Mesh.Sword0,
+	Type = PatternType.Fill,
+	Margin = 200,
 	Colour1 = Colour.Black,
 	Colour2 = Colour.Black,
-	Size = Utilities.SUGGESTED_ITEM_DIMENSIONS,
+	Size = new Vector2(200),
+	Rotation = 45,
 };
-Console.WriteLine(Utilities.Generate(backgroundParams, patternParams));
+Console.WriteLine(Utilities.Generate(backgroundParams, params));
+```
+
+- To get a banner for a **circular pattern** and a background [example](images/circle.png)
+
+```cs
+var patternParams = new CirclePatternGeneratorParams
+{
+	MeshId = Mesh.Sword0,
+	Amount = 25,
+	Radius = 200,
+	Colour1 = Colour.Black,
+	Colour2 = Colour.Black,
+	Size = new Vector2(100),
+	Rotation = 50,
+	AutomaticRotation = true,
+};
+Console.WriteLine(Utilities.Generate(backgroundParams, params));
 ```
