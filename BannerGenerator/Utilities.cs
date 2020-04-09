@@ -12,7 +12,7 @@ namespace BannerGenerator
         // Never Change
         private const int DIMENSION = 1540; // TODO Make these public to help with line pattern
         private const int BANNER_DIMENSION_Y = 760;
-        private const float ROTATION_PRECISION = 0.00278f;
+        //private const float ROTATION_PRECISION = 0.00278f;
         private const float OFFSET_Y = 25; // THe flag does not render show the exact centre
 
         // Calculated
@@ -157,7 +157,7 @@ namespace BannerGenerator
                         Colour2 = pattern.Colour2,
                         Size = pattern.Size,
                         Position = new Vector2(i * pattern.Margin, INNER_TOP_Y + (j * pattern.Margin)),
-                        Rotation = 0,
+                        Rotation = pattern.Rotation,
                     }));
                 }
             }
@@ -180,13 +180,12 @@ namespace BannerGenerator
                 var y = firstPoint.Y - pattern.Radius * (1 - Math.Cos(angle));
                 if (pattern.AutomaticRotation)
                 {
-                    rotation = 360 / pattern.Amount * i;
+                    rotation = (180 + 360 / pattern.Amount * i) % 360;
                 }
                 else
                 {
                     rotation = pattern.Rotation;
                 }
-
                 items.Add(GenerateItem(new ItemGeneratorParams
                 {
                     MeshId = pattern.MeshId,
@@ -270,7 +269,7 @@ namespace BannerGenerator
                 stringBuilder.Append('.');
                 stringBuilder.Append(bannerItem.Mirror ? 1 : 0);
                 stringBuilder.Append('.');
-                stringBuilder.Append((int)(bannerItem.RotationValue / ROTATION_PRECISION));
+                stringBuilder.Append((int)bannerItem.RotationValue % 360);
             }
             return stringBuilder.ToString();
         }
