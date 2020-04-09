@@ -49,7 +49,7 @@ Console.WriteLine(Utilities.Generate(backgroundParams, params));
 - To get a banner for a **circular pattern** and a background [example](images/circle.png)
 
 ```cs
-var patternParams = new CirclePatternGeneratorParams
+var params = new CirclePatternGeneratorParams
 {
 	MeshId = Mesh.Sword0,
 	Amount = 25,
