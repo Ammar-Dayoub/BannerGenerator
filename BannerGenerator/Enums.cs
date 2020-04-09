@@ -29,7 +29,6 @@
         RepeatY,
         Cross,
         CrossDiagonal,
-        Circle,
         Fill,
     }
 
@@ -41,8 +40,42 @@
 
     public enum BackgroundMesh
     {
-        Split = 1,
-        Fill = 11,
+        VerticalSplit0 = 1,
+        VerticalSplit1,
+        CheckeredSquares0,
+        CheckeredSquares1,
+        CheckeredSquares2,
+        CheckeredTriangles0,
+        CheckeredTriangles1,
+        CheckeredDiamonds0,
+        CheckeredDiamonds1,
+        Grid,
+        Fill,
+        DiagonalSplit,
+        Triangle0,
+        Triangle1,
+        Triangle2,
+        Triangle3,
+        Triangle4,
+        Cyclone0,
+        Cyclone1,
+        Cyclone2,
+        Cyclone3,
+        Cyclone4,
+        DiagonalLine,
+        VerticalLine0,
+        VerticalLine1,
+        EqualsSign,
+        Cross,
+        X,
+        HorizotalStripes,
+        DiagonalStripes,
+        CentralEmptySquare,
+        CentralFullSquare,
+        CentralDiamond,
+        CentralCircle,
+        WaveSplit,
+        ZigzagSplit
     }
 
     public enum Mesh

@@ -2,17 +2,18 @@
 
 namespace BannerGenerator
 {
-    public class Coloured {
+    public class BasicProperties {
         public Colour Colour1 { get; set; } // 0-157
         public Colour Colour2 { get; set; } // 0-157
+        public float Rotation { get; set; }
     }
 
-    public class BackgroundGeneratorParams : Coloured
+    public class BackgroundGeneratorParams : BasicProperties
     {
         public BackgroundMesh MeshId { get; set; } // 1-36
     }
 
-    public class ItemGeneratorParams : Coloured
+    public class ItemGeneratorParams : BasicProperties
     {
         public Mesh MeshId { get; set; }
         public Vector2 Size { get; set; }
@@ -21,14 +22,24 @@ namespace BannerGenerator
         public bool Mirror { get; set; }
         public AlignX AlignX { get; set; }
         public AlignY AlignY { get; set; }
-        public float Rotation { get; set; }
     }
 
-    public class PatternGeneratorParams : Coloured
+    public class Pattern : BasicProperties
     {
         public Mesh MeshId { get; set; }
         public Vector2 Size { get; set; }
+    }
+
+    public class PatternGeneratorParams : Pattern
+    {
         public PatternType Type { get; set; }
         public int Margin { get; set; }
+    }
+
+    public class CirclePatternGeneratorParams : Pattern
+    {
+        public int Amount { get; set; }
+        public float Radius { get; set; }
+        public bool AutomaticRotation { get; set; }
     }
 }

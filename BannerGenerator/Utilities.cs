@@ -1,6 +1,7 @@
-﻿using System.Text;
-using System.Collections.Generic;
+﻿using System;
+using System.Text;
 using System.Numerics;
+using System.Collections.Generic;
 
 namespace BannerGenerator
 {
@@ -66,16 +67,24 @@ namespace BannerGenerator
                     items.AddRange(PatternForCrossDiagonal(pattern));
                     break;
                 case PatternType.Fill:
-                    // TODO
-                    // items.AddRange(PatternForFill(pattern));
-                    break;
-                case PatternType.Circle:
-                    // TODO circle... yeah...
-                    // items.AddRange(PatternForCircle(pattern));
+                    items.AddRange(PatternForFill(pattern));
                     break;
                 default:
                     break;
             };
+
+            return Serialise(items);
+        }
+
+        public static string Generate(BackgroundGeneratorParams background, CirclePatternGeneratorParams pattern)
+        {
+            // Add background
+            var items = new List<BannerItem> {
+                GenerateBackground(background),
+            };
+
+            // Add items
+            items.AddRange(PatternForCircle(pattern));
 
             return Serialise(items);
         }
@@ -99,7 +108,7 @@ namespace BannerGenerator
                     Colour2 = pattern.Colour2,
                     Size = pattern.Size,
                     Position = new Vector2(startPoint.X + (i * stepX), startPoint.Y + (i * stepY)),
-                    Rotation = 0,
+                    Rotation = pattern.Rotation,
                 }));
             }
             return items;
@@ -131,19 +140,66 @@ namespace BannerGenerator
             return items;
         }
 
-        //private static List<BannerItem> PatternForFill(PatternGeneratorParams pattern)
-        //{
-        //    var items = new List<BannerItem>();
-        //    // DO STUFF
-        //    return items;
-        //}
+        private static List<BannerItem> PatternForFill(PatternGeneratorParams pattern)
+        {
+            var items = new List<BannerItem>();
+            var canFitX = (DIMENSION / pattern.Margin) + 1;
+            var canFitY = (BANNER_DIMENSION_Y / pattern.Margin) + 1;
 
-        //private static List<BannerItem> PatternForCircle(PatternGeneratorParams pattern)
-        //{
-        //    var items = new List<BannerItem>();
-        //    // DO STUFF
-        //    return items;
-        //}
+            for (int i = 0; i <= canFitX; i++)
+            {
+                for (int j = 0; j <= canFitY; j++)
+                {
+                    items.Add(GenerateItem(new ItemGeneratorParams
+                    {
+                        MeshId = pattern.MeshId,
+                        Colour1 = pattern.Colour1,
+                        Colour2 = pattern.Colour2,
+                        Size = pattern.Size,
+                        Position = new Vector2(i * pattern.Margin, INNER_TOP_Y + (j * pattern.Margin)),
+                        Rotation = 0,
+                    }));
+                }
+            }
+            return items;
+        }
+
+        private static List<BannerItem> PatternForCircle(CirclePatternGeneratorParams pattern)
+        {
+            var items = new List<BannerItem>();
+            var centre = CENTRE; // TODO make this a parameter;
+            var firstPoint = new Vector2(centre.X, centre.Y + pattern.Radius);
+
+            var arc = 2 * Math.PI / pattern.Amount;
+            float rotation;
+
+            for (int i = 0; i < pattern.Amount; i++)
+            {
+                var angle = arc * i;
+                var x = firstPoint.X + pattern.Radius * Math.Sin(angle);
+                var y = firstPoint.Y - pattern.Radius * (1 - Math.Cos(angle));
+                if (pattern.AutomaticRotation)
+                {
+                    rotation = 360 / pattern.Amount * i;
+                }
+                else
+                {
+                    rotation = pattern.Rotation;
+                }
+
+                items.Add(GenerateItem(new ItemGeneratorParams
+                {
+                    MeshId = pattern.MeshId,
+                    Colour1 = pattern.Colour1,
+                    Colour2 = pattern.Colour2,
+                    Size = pattern.Size,
+                    Position = new Vector2((float)x, (float)y),
+                    Rotation = rotation,
+                }));
+            }
+
+            return items;
+        }
         #endregion
 
         #region Helpers
@@ -202,19 +258,19 @@ namespace BannerGenerator
                 stringBuilder.Append('.');
                 stringBuilder.Append(bannerItem.ColorId2);
                 stringBuilder.Append('.');
-                stringBuilder.Append(bannerItem.Size.X);
+                stringBuilder.Append((int)bannerItem.Size.X);
                 stringBuilder.Append('.');
-                stringBuilder.Append(bannerItem.Size.Y);
+                stringBuilder.Append((int)bannerItem.Size.Y);
                 stringBuilder.Append('.');
-                stringBuilder.Append(bannerItem.Position.X);
+                stringBuilder.Append((int)bannerItem.Position.X);
                 stringBuilder.Append('.');
-                stringBuilder.Append(bannerItem.Position.Y);
+                stringBuilder.Append((int)bannerItem.Position.Y);
                 stringBuilder.Append('.');
                 stringBuilder.Append(bannerItem.DrawStroke ? 1 : 0);
                 stringBuilder.Append('.');
                 stringBuilder.Append(bannerItem.Mirror ? 1 : 0);
                 stringBuilder.Append('.');
-                stringBuilder.Append(bannerItem.RotationValue / ROTATION_PRECISION);
+                stringBuilder.Append((int)(bannerItem.RotationValue / ROTATION_PRECISION));
             }
             return stringBuilder.ToString();
         }
