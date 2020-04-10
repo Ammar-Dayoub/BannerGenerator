@@ -6,6 +6,9 @@ A bunch of utilities to generate banners for Mount &amp; Blade II: Bannerlord
 ## Setup
 
 - Refernce the nuget package [`Bannerlord.BannerGenerator`](https://www.nuget.org/packages/Bannerlord.BannerGenerator) in your project
+
+## Usage
+
 - Use the methods named `Utilities.Generate()` to generate a banner code as a string
 
 - To get a banner from an **item list** and a background (similar to https://bannerlord.party/banner/)
