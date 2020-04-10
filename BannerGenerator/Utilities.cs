@@ -24,30 +24,61 @@ namespace BannerGenerator
         public static Vector2 SUGGESTED_ITEM_DIMENSIONS = new Vector2 { X = 300, Y = 300 };
         #endregion
 
-        public static string Generate(BackgroundGeneratorParams background, List<ItemGeneratorParams> items)
+        public static string Generate(BackgroundGeneratorParams background,
+                                      List<ItemGeneratorParams> items,
+                                      List<PatternGeneratorParams> patterns,
+                                      List<CircleGeneratorParams> circles)
         {
+            var bannerItems = new List<BannerItem>();
             // Add background
-            var bannerItems = new List<BannerItem> {
-                GenerateBackground(background),
-            };
+            if (background != null)
+            {
+                bannerItems.Add(GenerateBackground(background));
+            }
+            else
+            {
+                bannerItems.Add(GenerateRandomBackground());
+            }
 
             // Add items
-            foreach (var item in items)
+            if (items != null)
             {
-                bannerItems.Add(GenerateItem(item));
-            };
+                foreach (var item in items)
+                {
+                    bannerItems.Add(GenerateItem(item));
+                };
+            }
+
+            // Add patterns
+            if (patterns != null)
+            {
+                foreach (var pattern in patterns)
+                {
+                    bannerItems.AddRange(GeneratePattern(pattern));
+                };
+            }
+
+            // Add circles
+            if (circles != null)
+            {
+                foreach (var circle in circles)
+                {
+                    bannerItems.AddRange(PatternForCircle(circle));
+                };
+            }
+
+            // If only background was added
+            if(bannerItems.Count == 1)
+            {
+                bannerItems.AddRange(GenerateRandomItems(1));
+            }
 
             return Serialise(bannerItems);
         }
 
-        public static string Generate(BackgroundGeneratorParams background, PatternGeneratorParams pattern)
+        private static List<BannerItem> GeneratePattern(PatternGeneratorParams pattern)
         {
-            // Add background
-            var items = new List<BannerItem> {
-                GenerateBackground(background),
-            };
-
-            // Add items
+            var items = new List<BannerItem>();
             switch (pattern.Type)
             {
                 case PatternType.Line:
@@ -72,21 +103,7 @@ namespace BannerGenerator
                 default:
                     break;
             };
-
-            return Serialise(items);
-        }
-
-        public static string Generate(BackgroundGeneratorParams background, CirclePatternGeneratorParams pattern)
-        {
-            // Add background
-            var items = new List<BannerItem> {
-                GenerateBackground(background),
-            };
-
-            // Add items
-            items.AddRange(PatternForCircle(pattern));
-
-            return Serialise(items);
+            return items;
         }
 
         #region Patterns
@@ -164,10 +181,10 @@ namespace BannerGenerator
             return items;
         }
 
-        private static List<BannerItem> PatternForCircle(CirclePatternGeneratorParams pattern)
+        private static List<BannerItem> PatternForCircle(CircleGeneratorParams pattern)
         {
             var items = new List<BannerItem>();
-            var centre = CENTRE; // TODO make this a parameter;
+            Vector2 centre = pattern.Centre ?? CENTRE;
             var firstPoint = new Vector2(centre.X, centre.Y + pattern.Radius);
 
             var arc = 2 * Math.PI / pattern.Amount;
@@ -208,14 +225,24 @@ namespace BannerGenerator
             return new BannerItem
             {
                 MeshId = (int)background.MeshId,
-                ColorId = (int)background.Colour1,
-                ColorId2 = (int)background.Colour2,
+                Colour1 = background.Colour1,
+                Colour2 = background.Colour2,
                 Size = size,
                 Position = GetPositionByAlignment(size, AlignX.Centre, AlignY.Centre),
                 DrawStroke = false,
                 Mirror = false,
                 RotationValue = 0
             };
+        }
+
+        private static BannerItem GenerateRandomBackground()
+        {
+            return GenerateBackground(new BackgroundGeneratorParams
+            {
+                MeshId = RandomEnumValue<BackgroundMesh>(),
+                Colour1 = RandomEnumValue<Colour>(),
+                Colour2 = RandomEnumValue<Colour>(),
+            });
         }
 
         private static BannerItem GenerateItem(ItemGeneratorParams item)
@@ -230,14 +257,35 @@ namespace BannerGenerator
             return new BannerItem
             {
                 MeshId = (int)item.MeshId,
-                ColorId = (int)item.Colour1,
-                ColorId2 = (int)item.Colour2,
+                Colour1 = item.Colour1,
+                Colour2 = item.Colour2,
                 Size = item.Size,
                 Position = (Vector2)position,
                 DrawStroke = item.DrawStroke,
                 Mirror = item.Mirror,
                 RotationValue = item.Rotation
             };
+        }
+
+        private static List<BannerItem> GenerateRandomItems(uint count)
+        {
+            var items = new List<BannerItem>();
+            var size = SUGGESTED_ITEM_DIMENSIONS;
+            for (int i = 0; i < count; i++)
+            {
+                items.Add(new BannerItem
+                {
+                    MeshId = (int)RandomEnumValue<Mesh>(),
+                    Colour1 = RandomEnumValue<Colour>(),
+                    Colour2 = RandomEnumValue<Colour>(),
+                    Size = size,
+                    Position = (Vector2)GetPositionByAlignment(size, RandomEnumValue<AlignX>(), RandomEnumValue<AlignY>()),
+                    DrawStroke = false,
+                    Mirror = false,
+                    RotationValue = 0
+                });
+            }
+            return items;
         }
 
         private static string Serialise(List<BannerItem> BannerItems)
@@ -251,11 +299,11 @@ namespace BannerGenerator
                     stringBuilder.Append('.');
                 }
                 first = false;
-                stringBuilder.Append(bannerItem.MeshId);
+                stringBuilder.Append((int)bannerItem.MeshId);
                 stringBuilder.Append('.');
-                stringBuilder.Append(bannerItem.ColorId);
+                stringBuilder.Append((int)bannerItem.Colour1);
                 stringBuilder.Append('.');
-                stringBuilder.Append(bannerItem.ColorId2);
+                stringBuilder.Append((int)bannerItem.Colour2);
                 stringBuilder.Append('.');
                 stringBuilder.Append((int)bannerItem.Size.X);
                 stringBuilder.Append('.');
@@ -305,6 +353,12 @@ namespace BannerGenerator
                     }
             }
             return new Vector2 { X = x, Y = y };
+        }
+
+        private static T RandomEnumValue<T>()
+        {
+            var v = Enum.GetValues(typeof(T));
+            return (T)v.GetValue(new Random().Next(v.Length));
         }
         #endregion
     }

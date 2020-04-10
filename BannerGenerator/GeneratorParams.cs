@@ -36,10 +36,11 @@ namespace BannerGenerator
         public int Margin { get; set; }
     }
 
-    public class CirclePatternGeneratorParams : Pattern
+    public class CircleGeneratorParams : Pattern
     {
         public int Amount { get; set; }
         public float Radius { get; set; }
         public bool AutomaticRotation { get; set; }
+        public Vector2? Centre { get; set; }
     }
 }

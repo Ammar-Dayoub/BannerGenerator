@@ -16,7 +16,8 @@ var backgroundParams = new BackgroundGeneratorParams {
 	Colour1 = Colour.White,
 	Colour2 = Colour.White,
 };
-var params = new List<ItemGeneratorParams> {
+var itemParams = new List<ItemGeneratorParams>
+{
 	new ItemGeneratorParams
 	{
 		MeshId = Mesh.Bird0,
@@ -27,38 +28,48 @@ var params = new List<ItemGeneratorParams> {
 		AlignY = AlignY.Centre
 	}
 };
-Console.WriteLine(Utilities.Generate(backgroundParams, params));
+Console.WriteLine("Item");
+Console.WriteLine(Utilities.Generate(backgroundParams, itemParams, null, null));
 ```
 
 - To get a banner for a **pattern** and a background [example shown above](images/fill.png)
 
 ```cs
-var params = new PatternGeneratorParams
+var patternParams = new List<PatternGeneratorParams>
 {
-	MeshId = Mesh.Sword0,
-	Type = PatternType.Fill,
-	Margin = 200,
-	Colour1 = Colour.Black,
-	Colour2 = Colour.Black,
-	Size = new Vector2(200),
-	Rotation = 45,
+	new PatternGeneratorParams
+	{
+		MeshId = Mesh.Sword0,
+		Type = PatternType.Fill,
+		Margin = 200,
+		Colour1 = Colour.Black,
+		Colour2 = Colour.Black,
+		Size = new Vector2(200),
+		Rotation = 45,
+	}
 };
-Console.WriteLine(Utilities.Generate(backgroundParams, params));
+Console.WriteLine("Pattern");
+Console.WriteLine(Utilities.Generate(backgroundParams, null, patternParams, null));
 ```
 
 - To get a banner for a **circular pattern** and a background [example](images/circle.png)
 
 ```cs
-var params = new CirclePatternGeneratorParams
+var params = new List<CircleGeneratorParams>
 {
-	MeshId = Mesh.Sword0,
-	Amount = 25,
-	Radius = 200,
-	Colour1 = Colour.Black,
-	Colour2 = Colour.Black,
-	Size = new Vector2(100),
-	Rotation = 50,
-	AutomaticRotation = true,
+	new CircleGeneratorParams
+	{
+		MeshId = Mesh.Sword0,
+		Amount = 25,
+		Radius = 200,
+		Colour1 = Colour.Black,
+		Colour2 = Colour.Black,
+		Size = new Vector2(100),
+		AutomaticRotation = true,
+	}
 };
-Console.WriteLine(Utilities.Generate(backgroundParams, params));
+Console.WriteLine("Circle");
+Console.WriteLine(Utilities.Generate(backgroundParams, null, null, params));
 ```
+
+- You can also combine any number of items/patterns/circles [example](images/combine.png)
